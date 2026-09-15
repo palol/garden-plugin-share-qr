@@ -1,0 +1,18 @@
+{% set qr = shareQr %}
+<div id="share-qr-dialog" class="share-qr-overlay" data-target-url="{{ qr.targetUrl | escape }}" aria-hidden="true" inert style="--share-qr-size: {{ qr.maxSize }}px; --share-qr-accent: var({{ qr.accentToken }}, #444)">
+  <section class="share-qr-card" role="dialog" aria-modal="true" aria-labelledby="share-qr-title">
+    <header class="share-qr-header">
+      <h2 id="share-qr-title">{{ qr.label | escape }}</h2>
+      <button type="button" data-share-qr-close aria-label="Close QR dialog">Close</button>
+    </header>
+    {% if qr.available %}
+    <img class="share-qr-image" src="{{ (qr.svgUrl if qr.svg else qr.pngUrl) | escape }}" alt="QR code for {{ qr.targetUrl | escape }}" width="{{ qr.width }}" height="{{ qr.height }}">
+    {% else %}<p>QR unavailable. You can still use this link.</p>{% endif %}
+    <a class="share-qr-link" data-share-qr-link href="{{ qr.fallbackUrl | escape }}">{{ (qr.targetUrl or 'Continue to this site') | escape }}</a>
+    <div class="share-qr-actions">
+      {% if qr.targetUrl %}<button type="button" data-share-qr-copy>Copy link</button>{% endif %}
+      {% if qr.available %}<a data-share-qr-download href="{{ (qr.pngUrl if qr.png else qr.svgUrl) | escape }}" download="{{ qr.filename | escape }}.{{ 'png' if qr.png else 'svg' }}">Download QR</a>{% endif %}
+    </div>
+    <p class="share-qr-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  </section>
+</div>

@@ -1,0 +1,73 @@
+.share-qr-overlay {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgb(0 0 0 / 64%);
+}
+.share-qr-overlay.active { display: flex; }
+body.share-qr-active { overflow: hidden; }
+.share-qr-card {
+  box-sizing: border-box;
+  width: min(420px, 100%);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  padding: 16px;
+  border: 2px solid var(--share-qr-accent);
+  border-radius: 16px;
+  background: var(--share-qr-surface, #fff);
+  color: var(--share-qr-ink, #171717);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 34%);
+  font: 1rem/1.4 system-ui, sans-serif;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.theme-dark .share-qr-card, [data-theme="dark"] .share-qr-card {
+  --share-qr-surface: #202020;
+  --share-qr-ink: #f5f5f5;
+}
+.share-qr-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.share-qr-card h2 { flex: 1; min-width: 0; margin: 0; color: inherit; font: 600 1.1rem/1.3 system-ui, sans-serif; }
+.share-qr-card .share-qr-image {
+  display: block;
+  width: min(100%, var(--share-qr-size, 360px));
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+.share-qr-link { display: block; margin: 12px 0; color: inherit; text-decoration: underline; }
+.share-qr-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.share-qr-card button, .share-qr-card [data-share-qr-download], .share-qr-trigger {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--share-qr-accent, currentColor);
+  border-radius: 8px;
+  background: var(--share-qr-surface, #fff);
+  color: var(--share-qr-ink, #171717);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: none;
+}
+.share-qr-actions > * { flex: 1 1 130px; }
+.share-qr-card [data-share-qr-close] { flex: none; }
+.share-qr-card :focus-visible, .share-qr-trigger:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.share-qr-status { min-height: 1.4em; margin: 10px 0 0; font-size: .875rem; color: inherit; }
+/* Deliberately motion-free, including in hosts with animated buttons. */
+.share-qr-overlay, .share-qr-overlay * { animation: none; transition: none; }
+@media (max-width: 360px) { .share-qr-card { padding: 12px; } }

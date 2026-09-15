@@ -1,0 +1,7 @@
+{% set qr = shareQr %}
+{% if not qr.externalTrigger %}
+<a class="share-qr-trigger" {% if qr.available %}data-share-qr-trigger href="{{ (qr.svgUrl if qr.svg else qr.pngUrl) | escape }}" download="{{ qr.filename | escape }}.{{ 'svg' if qr.svg else 'png' }}"{% else %}href="{{ qr.fallbackUrl | escape }}"{% endif %} aria-label="{{ qr.triggerLabel | escape }}">
+  {% if qr.triggerIcon != 'none' %}<span aria-hidden="true">{{ 'QR' if qr.triggerIcon == 'qr' else 'Link' }}</span>{% endif %}
+  {{ qr.triggerLabel | escape }}
+</a>
+{% endif %}
