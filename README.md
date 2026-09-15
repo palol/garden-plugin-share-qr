@@ -8,7 +8,7 @@ An accessible Digital Garden plugin that generates a deterministic site QR at bu
 
 Install from the Digital Garden community browser after the plugin is listed, or paste this repository URL into the plugin installer. For manual installation, copy this repository into `src/plugins/share-qr/`, enable `share-qr` in `src/plugins/plugins.json`, and restart the development server because the plugin registers an Eleventy hook.
 
-The host template must already provide the `qrcode` package. Share QR does not run install-time scripts or add dependencies to the garden.
+Share QR has no runtime dependencies. It bundles a small MIT-licensed pure-JS QR encoder under `vendor/`, so it works in stock Digital Garden hosts that do not ship the `qrcode` npm package. It does not run install-time scripts or modify the garden.
 
 With a valid `meta.siteBaseUrl`, the plugin works without configuration. Its default `floating.bottomRight` slot renders one ordinary link and `common.footer` renders the dialog.
 
@@ -30,7 +30,7 @@ The manifest declares typed settings with descriptions, defaults, and environmen
 
 Environment names use the `SHARE_QR_` prefix, such as `SHARE_QR_LABEL` and `SHARE_QR_TARGET_URL`.
 
-An invalid explicit URL warns and falls back to validated site metadata. If no valid target remains, the plugin emits no placeholder QR and renders a usable navigation link. SVG and PNG use the same canonical URL, error correction level, mask, four-module quiet zone, black modules on white, and 720 px dimensions.
+An invalid explicit URL warns and falls back to validated site metadata. If no valid target remains, the plugin emits no placeholder QR and renders a usable navigation link. SVG and PNG use the same canonical URL, error-correction level M, a four-module quiet zone, black modules on white, and 720 px dimensions, generated deterministically from the vendored encoder.
 
 ## Accessibility and progressive enhancement
 
@@ -65,4 +65,4 @@ Tests cover manifest paths and generic identity, URL and filename safety, determ
 
 ## Privacy and provenance
 
-Share QR generates local build assets from the configured URL. It performs no runtime network calls and stores nothing. Extracted and redesigned from Paolo Gabriel's Digital Garden integration. The optional shared dialog controller is a host API and is not bundled. Digital Garden and the existing `qrcode` package are MIT-licensed; neither is vendored here.
+Share QR generates local build assets from the configured URL. It performs no runtime network calls and stores nothing. Extracted and redesigned from Paolo Gabriel's Digital Garden integration. The optional shared dialog controller is a host API and is not bundled. The bundled QR encoder is `qrcode-generator` by Kazuhiko Arase, MIT-licensed; see `vendor/LICENSE.qrcode-generator`.
