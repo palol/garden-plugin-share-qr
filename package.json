@@ -1,6 +1,6 @@
 {
   "name": "garden-plugin-share-qr",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Development and tests for the Share QR Digital Garden plugin",
   "license": "MIT",

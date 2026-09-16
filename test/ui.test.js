@@ -29,6 +29,22 @@ function chrome(html, checks) {
 }
 
 describe("share-qr presentation", () => {
+  it("renders icon-only by default and adds a visible word plus prefixed accessible name when triggerLabel is set", () => {
+    const iconOnly = parse(render(model()));
+    const trigger = iconOnly.querySelector('[data-share-qr-trigger]');
+    expect(trigger.textContent.trim()).toBe("");
+    expect(trigger.querySelectorAll('svg.share-qr-trigger-mark')).toHaveLength(1);
+    expect(trigger.getAttribute('aria-label')).toBe("Scan to visit this site");
+    expect(trigger.getAttribute('title')).toBe("Scan to visit this site");
+
+    const labelled = parse(render(model({ triggerLabel: "QR" })));
+    const lt = labelled.querySelector('[data-share-qr-trigger]');
+    expect(lt.textContent.trim()).toBe("QR");
+    expect(lt.querySelectorAll('svg.share-qr-trigger-mark')).toHaveLength(1);
+    expect(lt.getAttribute('aria-label')).toBe("QR: Scan to visit this site");
+    expect(lt.getAttribute('title')).toBe("Scan to visit this site");
+  });
+
   it("escapes labels and attributes, renders one real trigger and modal, and respects format availability", () => {
     const html = render(model({ label: '<img src=x onerror="bad()">', triggerLabel: '" onclick="bad()', filename: '../../x.png' }));
     const doc = parse(html);
@@ -106,7 +122,8 @@ describe("share-qr presentation", () => {
         assert(w.getComputedStyle(trigger).color===chrome[1],'trigger ink follows '+theme);
         const glyph=trigger.querySelector('svg.share-qr-trigger-mark');
         assert(glyph && Math.round(glyph.getBoundingClientRect().width)===18 && w.getComputedStyle(glyph).display!=='none','inline glyph visible');
-        assert(trigger.textContent.trim()==='QR' && trigger.querySelectorAll('svg').length===1,'single visible label');
+        assert(trigger.textContent.trim()==='' && trigger.querySelectorAll('svg').length===1,'icon-only trigger by default');
+        assert(trigger.getAttribute('aria-label')==='Scan to visit this site','icon-only accessible name is the card label');
         assert(d.documentElement.scrollWidth<=width && d.querySelector('.share-qr-card').scrollWidth<=box.width,'no overflow');
         frame.remove();
       }

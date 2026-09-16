@@ -1,7 +1,7 @@
 {
   "id": "share-qr",
   "name": "Share QR",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A downloadable, build-time site QR card with an accessible dialog.",
   "author": "Paolo Gabriel",
   "hooks": "index.js",
@@ -17,7 +17,7 @@
     { "key": "filename", "name": "Download filename", "description": "Filename stem, sanitized to letters, digits, hyphens and underscores, at most 80 characters.", "type": "text", "default": "site-qr", "env": "SHARE_QR_FILENAME" },
     { "key": "svg", "name": "Offer SVG", "description": "Use SVG for the image and fallback link when enabled. At least one format remains enabled.", "type": "boolean", "default": true, "env": "SHARE_QR_SVG" },
     { "key": "png", "name": "Offer PNG", "description": "Prefer PNG for Download QR. Both assets are generated from the same target; this controls availability in the card.", "type": "boolean", "default": true, "env": "SHARE_QR_PNG" },
-    { "key": "triggerLabel", "name": "Trigger label", "description": "Plain text visible label for the QR link and the first half of its accessible name, up to 500 characters. Keep it short for a floating dock.", "type": "text", "default": "QR", "env": "SHARE_QR_TRIGGER_LABEL" },
+    { "key": "triggerLabel", "name": "Trigger label", "description": "Optional short visible text beside the trigger glyph (plain text, up to 500 characters). Leave empty for an icon-only button; the accessible name is then the card label.", "type": "text", "default": "", "env": "SHARE_QR_TRIGGER_LABEL" },
     { "key": "triggerIcon", "name": "Trigger icon", "description": "Built-in inline SVG mark: qr, link, or none. No icon font, HTML, or remote assets.", "type": "text", "default": "qr", "env": "SHARE_QR_TRIGGER_ICON" },
     { "key": "maxSize", "name": "Maximum QR display size", "description": "Pixels, clamped to 160-360. The natural image size remains 720 by 720.", "type": "number", "default": 360, "env": "SHARE_QR_MAX_SIZE" },
     { "key": "accentToken", "name": "Theme accent token", "description": "CSS custom-property name beginning with --. Themes the card border, never QR modules. Neutral fallback if absent.", "type": "text", "default": "--interactive-accent", "env": "SHARE_QR_ACCENT_TOKEN" },
