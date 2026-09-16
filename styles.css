@@ -26,7 +26,10 @@ body.share-qr-active { overflow: hidden; }
   text-align: left;
   overflow-wrap: anywhere;
 }
-.theme-dark .share-qr-card, [data-theme="dark"] .share-qr-card {
+/* Card chrome and the default trigger share one token set, so neither renders
+   as a light pill inside a dark garden. QR pixels are never recolored. */
+.theme-dark .share-qr-card, [data-theme="dark"] .share-qr-card,
+.theme-dark .share-qr-trigger, [data-theme="dark"] .share-qr-trigger {
   --share-qr-surface: #202020;
   --share-qr-ink: #f5f5f5;
 }
@@ -66,6 +69,8 @@ body.share-qr-active { overflow: hidden; }
 }
 .share-qr-actions > * { flex: 1 1 130px; }
 .share-qr-card [data-share-qr-close] { flex: none; }
+.share-qr-trigger { gap: 8px; }
+.share-qr-trigger-mark { flex: none; display: block; }
 .share-qr-card :focus-visible, .share-qr-trigger:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
 .share-qr-status { min-height: 1.4em; margin: 10px 0 0; font-size: .875rem; color: inherit; }
 /* Deliberately motion-free, including in hosts with animated buttons. */
