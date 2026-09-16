@@ -18,7 +18,7 @@ function render(name, model) {
 describe('standalone package', () => {
   it('has a valid generic manifest and every declared path', () => {
     const manifest = JSON.parse(read('garden-plugin.json'));
-    expect(manifest).toMatchObject({ id: 'share-qr', version: '1.0.0', author: 'Paolo Gabriel' });
+    expect(manifest).toMatchObject({ id: 'share-qr', version: '1.0.1', author: 'Paolo Gabriel' });
     expect(manifest.id).toMatch(/^[a-z0-9][a-z0-9-]*$/);
     expect(manifest.id.startsWith('dg-')).toBe(false);
     const declared = [manifest.hooks, ...manifest.styles, ...manifest.scripts, ...Object.values(manifest.slots)];
@@ -62,11 +62,33 @@ describe('standalone package', () => {
     expect(doc.querySelector('[onclick]')).toBeNull();
     expect(doc.querySelector('h2').textContent).toBe('<img src=x onerror=bad()>');
     expect(doc.querySelector('[data-share-qr-trigger]').getAttribute('download')).toBe('x.svg');
+    // Owner text reaches both attributes, so both must render escaped. Assert
+    // on the raw markup: a parsed DOM hands back decoded entities.
+    const rawTrigger = render('templates/trigger.njk', model);
+    expect(rawTrigger).toContain('aria-label="&quot; onclick=&quot;bad(): &lt;img src=x onerror=bad()&gt;"');
+    expect(rawTrigger).toContain('title="&lt;img src=x onerror=bad()&gt;"');
     expect(parse(render('templates/trigger.njk', { ...model, externalTrigger: true })).querySelector('[data-share-qr-trigger]')).toBeNull();
     const unavailable = parse(render('templates/dialog.njk', { ...resolveSettings({}, {}), available: false }));
     expect(unavailable.querySelector('img')).toBeNull();
     expect(unavailable.textContent).toContain('QR unavailable');
     expect(unavailable.querySelector('a').getAttribute('href')).toBe('./');
+  });
+
+  it('renders an inline SVG mark, one visible label, and no remote asset', () => {
+    const base = { ...resolveSettings({ targetUrl: 'https://example.org' }), svgUrl: '/qr.svg', pngUrl: '/qr.png', width: 720, height: 720, available: true };
+    const mark = extra => parse(render('templates/trigger.njk', { ...base, ...extra })).querySelector('.share-qr-trigger');
+    for (const [triggerIcon, count] of [['qr', 1], ['link', 1], ['none', 0]]) {
+      const trigger = mark({ triggerIcon });
+      expect(trigger.querySelectorAll('svg.share-qr-trigger-mark')).toHaveLength(count);
+      // The mark never contributes text: the label is the only thing read.
+      expect(trigger.textContent.replace(/\s+/g, ' ').trim()).toBe('QR');
+      expect(trigger.outerHTML).not.toMatch(/https?:|url\(|xlink/i);
+      expect(trigger.getAttribute('aria-label')).toBe('QR: Scan to visit this site');
+      expect(trigger.getAttribute('title')).toBe('Scan to visit this site');
+    }
+    expect(mark({ triggerIcon: 'qr' }).innerHTML).not.toBe(mark({ triggerIcon: 'link' }).innerHTML);
+    // An unusable icon value falls back to the QR mark rather than rendering nothing.
+    expect(resolveSettings({ targetUrl: 'https://example.org', triggerIcon: 'bogus' }).triggerIcon).toBe('qr');
   });
 
   it('writes both assets before exposing links and falls back on filesystem failure', async () => {

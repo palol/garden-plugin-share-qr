@@ -29,7 +29,7 @@ function resolveSettings(settings = {}, meta = {}, warn = console.warn) {
     targetUrl, fallbackUrl: targetUrl || "./",
     label: text("label", "Scan to visit this site"), filename,
     svg: svg || !png, png,
-    triggerLabel: text("triggerLabel", "Show site QR"),
+    triggerLabel: text("triggerLabel", "QR"),
     triggerIcon: ["qr", "link", "none"].includes(settings.triggerIcon) ? settings.triggerIcon : "qr",
     externalTrigger: settings.externalTrigger === true,
     maxSize: Number.isFinite(settings.maxSize) ? Math.max(160, Math.min(360, settings.maxSize)) : 360,

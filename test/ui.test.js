@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import nunjucks from "nunjucks";
@@ -15,7 +16,7 @@ const render = value => ["templates/trigger.njk", "templates/dialog.njk"]
   .join("");
 
 function chrome(html, checks) {
-  const dir = fs.mkdtempSync("/tmp/opencode/share-qr-ui-");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "share-qr-ui-"));
   try {
     fs.writeFileSync(path.join(dir, "test.html"), `${html}<script>addEventListener('load', async () => {
       const result = document.createElement('pre'); result.id = 'result';
@@ -99,6 +100,13 @@ describe("share-qr presentation", () => {
         assert(box.left>=0 && box.right<=width && box.top>=0 && box.bottom<=900,'card fits '+width);
         assert(img.width<=360 && img.width>200 && Math.abs(img.width-img.height)<1,'square bounded QR');
         assert(w.getComputedStyle(d.querySelector('img')).backgroundColor==='rgb(255, 255, 255)','white QR');
+        const trigger=d.querySelector('[data-share-qr-trigger]');
+        const chrome=theme==='dark' ? ['rgb(32, 32, 32)','rgb(245, 245, 245)'] : ['rgb(255, 255, 255)','rgb(23, 23, 23)'];
+        assert(w.getComputedStyle(trigger).backgroundColor===chrome[0],'trigger surface follows '+theme);
+        assert(w.getComputedStyle(trigger).color===chrome[1],'trigger ink follows '+theme);
+        const glyph=trigger.querySelector('svg.share-qr-trigger-mark');
+        assert(glyph && Math.round(glyph.getBoundingClientRect().width)===18 && w.getComputedStyle(glyph).display!=='none','inline glyph visible');
+        assert(trigger.textContent.trim()==='QR' && trigger.querySelectorAll('svg').length===1,'single visible label');
         assert(d.documentElement.scrollWidth<=width && d.querySelector('.share-qr-card').scrollWidth<=box.width,'no overflow');
         frame.remove();
       }
