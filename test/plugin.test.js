@@ -18,7 +18,14 @@ function render(name, model) {
 describe('standalone package', () => {
   it('has a valid generic manifest and every declared path', () => {
     const manifest = JSON.parse(read('garden-plugin.json'));
-    expect(manifest).toMatchObject({ id: 'share-qr', version: '1.0.1', author: 'Paolo Gabriel' });
+    expect(manifest).toMatchObject({ id: 'share-qr', author: 'Paolo Gabriel' });
+    // The manifest owns the version; it must stay consistent with the package
+    // metadata and lockfile so a bump doesn't require touching this test.
+    const pkg = JSON.parse(read('package.json'));
+    const lock = JSON.parse(read('package-lock.json'));
+    expect(pkg.version).toBe(manifest.version);
+    expect(lock.version).toBe(manifest.version);
+    expect(lock.packages?.['']?.version).toBe(manifest.version);
     expect(manifest.id).toMatch(/^[a-z0-9][a-z0-9-]*$/);
     expect(manifest.id.startsWith('dg-')).toBe(false);
     const declared = [manifest.hooks, ...manifest.styles, ...manifest.scripts, ...Object.values(manifest.slots)];
@@ -80,10 +87,11 @@ describe('standalone package', () => {
     for (const [triggerIcon, count] of [['qr', 1], ['link', 1], ['none', 0]]) {
       const trigger = mark({ triggerIcon });
       expect(trigger.querySelectorAll('svg.share-qr-trigger-mark')).toHaveLength(count);
-      // The mark never contributes text: the label is the only thing read.
-      expect(trigger.textContent.replace(/\s+/g, ' ').trim()).toBe('QR');
+      // Icon-only by default: the mark never contributes text and the glyph is
+      // the only visible content; the accessible name is the card label.
+      expect(trigger.textContent.replace(/\s+/g, ' ').trim()).toBe('');
       expect(trigger.outerHTML).not.toMatch(/https?:|url\(|xlink/i);
-      expect(trigger.getAttribute('aria-label')).toBe('QR: Scan to visit this site');
+      expect(trigger.getAttribute('aria-label')).toBe('Scan to visit this site');
       expect(trigger.getAttribute('title')).toBe('Scan to visit this site');
     }
     expect(mark({ triggerIcon: 'qr' }).innerHTML).not.toBe(mark({ triggerIcon: 'link' }).innerHTML);

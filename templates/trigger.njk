@@ -1,7 +1,7 @@
 {% set qr = shareQr %}
 {% if not qr.externalTrigger %}
-<a class="share-qr-trigger" {% if qr.available %}data-share-qr-trigger href="{{ (qr.svgUrl if qr.svg else qr.pngUrl) | escape }}" download="{{ qr.filename | escape }}.{{ 'svg' if qr.svg else 'png' }}"{% else %}href="{{ qr.fallbackUrl | escape }}"{% endif %} aria-label="{{ qr.triggerLabel | escape }}: {{ qr.label | escape }}" title="{{ qr.label | escape }}">
+<a class="share-qr-trigger" {% if qr.available %}data-share-qr-trigger href="{{ (qr.svgUrl if qr.svg else qr.pngUrl) | escape }}" download="{{ qr.filename | escape }}.{{ 'svg' if qr.svg else 'png' }}"{% else %}href="{{ qr.fallbackUrl | escape }}"{% endif %} aria-label="{{ qr.ariaLabel | escape }}" title="{{ qr.label | escape }}">
   {% if qr.triggerIcon == 'qr' %}<svg class="share-qr-trigger-mark" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M20.5 20.5h.01M14.5 20.5h.01M20.5 14.5h.01"/></svg>{% elif qr.triggerIcon == 'link' %}<svg class="share-qr-trigger-mark" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.5 14.5 14.5 9.5"/><rect x="2.5" y="8" width="8" height="8" rx="4"/><rect x="13.5" y="8" width="8" height="8" rx="4"/></svg>{% endif %}
-  {{ qr.triggerLabel | escape }}
+  {% if qr.triggerLabel %}{{ qr.triggerLabel | escape }}{% endif %}
 </a>
 {% endif %}

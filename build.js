@@ -25,11 +25,17 @@ function resolveSettings(settings = {}, meta = {}, warn = console.warn) {
   const svg = typeof settings.svg === "boolean" ? settings.svg : true;
   const png = typeof settings.png === "boolean" ? settings.png : true;
   if (!svg && !png) warn("[share-qr] At least one QR format is required; enabling SVG.");
+  const label = text("label", "Scan to visit this site");
+  // Icon-only by default: empty triggerLabel renders just the glyph, and the
+  // accessible name falls back to the card label. Set triggerLabel to add a
+  // short visible word next to the glyph.
+  const triggerLabel = text("triggerLabel", "");
   return {
     targetUrl, fallbackUrl: targetUrl || "./",
-    label: text("label", "Scan to visit this site"), filename,
+    label, filename,
     svg: svg || !png, png,
-    triggerLabel: text("triggerLabel", "QR"),
+    triggerLabel,
+    ariaLabel: triggerLabel ? `${triggerLabel}: ${label}` : label,
     triggerIcon: ["qr", "link", "none"].includes(settings.triggerIcon) ? settings.triggerIcon : "qr",
     externalTrigger: settings.externalTrigger === true,
     maxSize: Number.isFinite(settings.maxSize) ? Math.max(160, Math.min(360, settings.maxSize)) : 360,
