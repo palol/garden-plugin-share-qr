@@ -40,7 +40,7 @@ describe('standalone package', () => {
 
   it('validates URLs and filenames and fails safely', () => {
     const warn = vi.fn();
-    expect(resolveSettings({ targetUrl: 'javascript:alert(1)', filename: '../../x.png' }, {}, warn)).toMatchObject({ targetUrl: null, fallbackUrl: './', filename: 'x' });
+    expect(resolveSettings({ targetUrl: 'javascript:alert(1)', filename: '../../x.png' }, {}, warn)).toMatchObject({ targetUrl: null, fallbackUrl: '/', filename: 'x' });
     expect(resolveSettings({ targetUrl: 'https://user:secret@example.org' }, {}, warn).targetUrl).toBeNull();
     expect(resolveSettings({}, { siteBaseUrl: 'https://example.org/' }, warn).targetUrl).toBe('https://example.org');
     expect(resolveSettings({ svg: false, png: false }, { siteBaseUrl: 'https://example.org' }, warn).svg).toBe(true);
@@ -78,7 +78,7 @@ describe('standalone package', () => {
     const unavailable = parse(render('templates/dialog.njk', { ...resolveSettings({}, {}), available: false }));
     expect(unavailable.querySelector('img')).toBeNull();
     expect(unavailable.textContent).toContain('QR unavailable');
-    expect(unavailable.querySelector('a').getAttribute('href')).toBe('./');
+    expect(unavailable.querySelector('a').getAttribute('href')).toBe('/');
   });
 
   it('renders an inline SVG mark, one visible label, and no remote asset', () => {
