@@ -31,7 +31,7 @@ function resolveSettings(settings = {}, meta = {}, warn = console.warn) {
   // short visible word next to the glyph.
   const triggerLabel = text("triggerLabel", "");
   return {
-    targetUrl, fallbackUrl: targetUrl || "./",
+    targetUrl, fallbackUrl: targetUrl || "/",
     label, filename,
     svg: svg || !png, png,
     triggerLabel,
